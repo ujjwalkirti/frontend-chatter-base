@@ -15,7 +15,6 @@ async function getAllChatRooms(): Promise<ChatRoom[]> {
     ];
 }
 
-
 export {
     getAllChatRooms
 }

@@ -9,3 +9,13 @@ interface ChatRoom {
     lastMessageContent?: string;
     participantCount?: number;
 }
+
+
+interface Message{
+    id: string;
+    message: string;
+    senderId: string;
+    senderName: string;
+    createdAt: string;
+    updatedAt: string;
+}
