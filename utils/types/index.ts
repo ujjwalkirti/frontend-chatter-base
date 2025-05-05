@@ -19,3 +19,13 @@ interface Message{
     createdAt: string;
     updatedAt: string;
 }
+
+interface User{
+    id: string;
+    username: string;
+    dob: string;
+    gender: string;
+    ip_address: string;
+    createdAt: string;
+    updatedAt: string;
+}

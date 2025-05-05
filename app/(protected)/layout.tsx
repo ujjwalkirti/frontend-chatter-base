@@ -1,13 +1,16 @@
 import { SocketProvider } from "@/contexts/SocketProvider";
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const user = true;
-    if(!user) redirect("/login");
+    const session = await getServerSession();
+
+    if(!session) return redirect("/login");
+
     return (
         <html lang="en">
             <body className=''>
