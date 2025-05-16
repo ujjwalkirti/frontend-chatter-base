@@ -1,13 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { AlignJustifyIcon, MoveUpRightIcon } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { authContext } from "@/contexts/AuthProvider";
+import { AlignJustifyIcon, LogOutIcon, MoveUpRightIcon } from "lucide-react";
 import Link from "next/link";
+import { useContext } from "react";
 
 function NavbarDrawer() {
+	const { user } = useContext(authContext);
 	const navLinks = [
 		{ label: "Chatrooms", href: "/chatrooms/available" },
 		{ label: "Profile", href: "/profile" },
 	];
+
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
@@ -24,6 +28,11 @@ function NavbarDrawer() {
 							</Link>
 						);
 					})}
+					{user && (
+						<Link href="/api/auth/signout" className="flex items-center gap-2 text-lg hover:cursor-pointer hover:underline hover:scale-105 transition-all duration-300 mx-auto">
+							Logout <LogOutIcon/>
+						</Link>
+					)}
 				</div>
 			</SheetContent>
 		</Sheet>

@@ -1,6 +1,5 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -11,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2Icon, MessagesSquareIcon, MoveUpRightIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getBrowser, getDeviceType, getOS } from "@/utils/functions/deviceDetails";
 
 interface LoginFormProps {
 	currentIPAddress: string;
@@ -37,6 +38,7 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export default function LoginForm({ currentIPAddress }: LoginFormProps) {
+	const router = useRouter();
 	const form = useForm<FormData>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
@@ -49,20 +51,41 @@ export default function LoginForm({ currentIPAddress }: LoginFormProps) {
 		const { username, dob, gender } = data;
 
 		try {
-			const response: any = await signIn("credentials", {
-				username,
-				dob,
-				gender,
-				ip_address: currentIPAddress,
-				callbackUrl: "/",
+			const response: any = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/auth/register", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					username,
+					dob,
+					gender,
+					deviceDetails: {
+						ipAddress: currentIPAddress,
+						currentOS: getOS(),
+						browser: getBrowser(),
+						deviceType: getDeviceType(),
+						timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+						language: navigator.language,
+						userAgent: navigator.userAgent,
+					},
+				}),
 			});
-
-			if (!response.ok) {
-				toast("Registration Failed", { description: response.message });
+			const data = await response.json();
+			if (data.success) {
+				toast("Registration Successful", { description: data.message });
+				localStorage.setItem("chatter_base_token", data.data.token);
+				// get last url if stored in localstorage
+				const lastUrl = localStorage.getItem("lastUrl");
+				if (lastUrl) {
+					router.push(lastUrl);
+					return;
+				}
+				router.push("/chatrooms/available");
 				return;
 			}
+			toast("Registration Failed", { description: data.message });
 
-			toast("Registration Successful", { description: response.message });
 		} catch (error: any) {
 			console.log(error);
 			toast("Registration Failed", { description: "Please try again" });

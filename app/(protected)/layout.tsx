@@ -1,21 +1,31 @@
+'use client';
+import Navbar from "@/components/common/Navbar";
+import { authContext } from "@/contexts/AuthProvider";
 import { SocketProvider } from "@/contexts/SocketProvider";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect } from "react";
 
 export default async function RootLayout({
-    children,
+	children,
 }: Readonly<{
-    children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-    const session = await getServerSession();
+	const { user } = useContext(authContext);
+	const router  = useRouter();
 
-    if(!session) return redirect("/login");
+	useEffect(() => {
+		if (!user) {
+			localStorage.setItem("lastUrl", window.location.href);
+			router.push("/login");
+		}
+	}, [user]);
 
-    return (
-        <html lang="en">
-            <body className=''>
-                <SocketProvider>{children}</SocketProvider>
-            </body>
-        </html>
-    );
+	return (
+		<html lang="en">
+			<body className="">
+				<Navbar />
+				<SocketProvider>{children}</SocketProvider>
+			</body>
+		</html>
+	);
 }
