@@ -8,11 +8,12 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
 
 const formSchema = z.object({
 	name: z.string({ required_error: "Name is required" }),
 	// this is enum
-	chatRoomType: z.enum(["group", "private"], { required_error: "Chat room type is required" }),
+	type: z.enum(["group", "private"], { required_error: "Chat room type is required" }),
 });
 
 function CreateChatRoomDialog() {
@@ -20,12 +21,33 @@ function CreateChatRoomDialog() {
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: "",
-			chatRoomType: "group",
+			type: "group",
 		},
 	});
 
-	function onSubmit(values: z.infer<typeof formSchema>) {
-		console.log(values);
+	async function onSubmit(values: z.infer<typeof formSchema>) {
+		try {
+			const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/api/chatroom/create", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ chatRoomDetails: values }),
+			});
+
+			const data = await response.json();
+
+			console.log(data);
+
+			if (data.success) {
+				toast(data.message);
+				window.location.href = `/chatrooms/${data.data._id}`;
+			} else {
+				toast("Something went wrong!", { description: data.message });
+			}
+		} catch (error) {
+			toast("Something went wrong!", { description: "Internal Server Error" });
+		}
 	}
 
 	return (
@@ -56,7 +78,7 @@ function CreateChatRoomDialog() {
 						/>
 						<FormField
 							control={form.control}
-							name="chatRoomType"
+							name="type"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Select Chat Room Type</FormLabel>
@@ -78,7 +100,9 @@ function CreateChatRoomDialog() {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full">Submit</Button>
+						<Button type="submit" className="w-full">
+							Submit
+						</Button>
 					</form>
 				</Form>
 				<DialogFooter className="sm:justify-start">

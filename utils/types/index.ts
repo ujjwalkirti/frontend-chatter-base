@@ -1,7 +1,7 @@
 type ChatRoomType = 'private' | 'group' | 'anonymous';
 
 interface ChatRoom {
-    id: string;
+    _id: string;
     name?: string;
     type: ChatRoomType;
     createdAt: string;
