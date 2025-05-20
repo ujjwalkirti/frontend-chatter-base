@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface IndividualMessageBoxProps {
-	message: string;
+	message: Message;
 	isSenderCurrentUser: boolean;
 }
 
@@ -15,7 +15,7 @@ function IndividualMessageBox({ message, isSenderCurrentUser }: IndividualMessag
 				<AvatarFallback>CN</AvatarFallback>
 			</Avatar>
 			<div onClick={() => setShowMessageDetails(!showMessageDetails)} className={`break-words border border-md rounded-t-lg   ${isSenderCurrentUser ? "bg-accent rounded-bl-lg" : "rounded-br-lg"} p-2`}>
-				<p className={`break-words`}>{JSON.parse(message).message}</p>
+				<p className={`break-words`}>{message.message}</p>
 			</div>
 		</div>
 	);

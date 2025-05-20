@@ -25,8 +25,8 @@ function MessagesContainer() {
 	return (
 		<div id="message-container" className="flex flex-col p-2 gap-2 h-[calc(100vh-250px)] overflow-y-scroll">
 			{messages.map((message, index) => {
-				const isSenderCurrentUser = JSON.parse(message).senderId === localStorage.getItem("senderId");
-				return <IndividualMessageBox isSenderCurrentUser={isSenderCurrentUser} message={message} key={JSON.parse(message).id + index.toString()} />;
+				const isSenderCurrentUser = message.senderId === localStorage.getItem("senderId");
+				return <IndividualMessageBox isSenderCurrentUser={isSenderCurrentUser} message={message} key={message.senderId + index.toString()} />;
 			})}
 		</div>
 	);

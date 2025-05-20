@@ -11,16 +11,12 @@ interface ChatRoom {
 }
 
 
-interface Message{
-    id: string;
-    message: string;
+interface Message {
     senderId: string;
-    senderName: string;
-    createdAt: string;
-    updatedAt: string;
+    message: string;
 }
 
-interface User{
+interface User {
     id: string;
     username: string;
     dob: string;

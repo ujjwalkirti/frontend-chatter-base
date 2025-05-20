@@ -16,13 +16,7 @@ function MessageBox({ receiverId }: MessageBoxProps) {
 	const { sendMessage } = useSocket();
 
 	const createMessage = (senderId: string, receiverId: string) => {
-		sendMessage(
-			JSON.stringify({
-				message: message,
-				senderId: senderId,
-				receiverId: receiverId,
-			})
-		);
+		sendMessage(message, senderId, receiverId);
 	};
 
 	const onkeydown = (e: React.KeyboardEvent) => {
