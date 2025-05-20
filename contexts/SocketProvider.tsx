@@ -34,7 +34,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    const _socket = io("http://localhost:8000");
+    const _socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000");
 
     _socket.on("message", onMessageRec); // Make sure server emits on "message"
 

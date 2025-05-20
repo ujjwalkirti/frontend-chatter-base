@@ -5,20 +5,20 @@ import { SocketProvider } from "@/contexts/SocketProvider";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 
-export default async function RootLayout({
+export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const { user } = useContext(authContext);
-	const router  = useRouter();
+	// const { user } = useContext(authContext);
+	// const router  = useRouter();
 
-	useEffect(() => {
-		if (!user) {
-			localStorage.setItem("lastUrl", window.location.href);
-			router.push("/login");
-		}
-	}, [user]);
+	// useEffect(() => {
+	// 	if (!user) {
+	// 		localStorage.setItem("lastUrl", window.location.href);
+	// 		router.push("/login");
+	// 	}
+	// }, [user]);
 
 	return (
 		<html lang="en">

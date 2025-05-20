@@ -6,23 +6,34 @@ import { Button } from "../ui/button";
 import { useSocket } from "@/contexts/SocketProvider";
 import { v4 as uuidv4 } from "uuid";
 
-function MessageBox() {
+interface MessageBoxProps {
+	receiverId: string;
+}
+
+function MessageBox({ receiverId }: MessageBoxProps) {
 	const [message, setMessage] = React.useState("");
+	const [senderId, setSenderId] = React.useState(localStorage.getItem("senderId") || uuidv4());
 	const { sendMessage } = useSocket();
 
-	const createMessage = (senderId: string, senderName: string) => {
-		sendMessage(JSON.stringify({ id: uuidv4(), message: message, senderId: senderId, senderName: senderName, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }));
+	const createMessage = (senderId: string, receiverId: string) => {
+		sendMessage(
+			JSON.stringify({
+				message: message,
+				senderId: senderId,
+				receiverId: receiverId,
+			})
+		);
 	};
 
 	const onkeydown = (e: React.KeyboardEvent) => {
 		if (e.key === "Enter") {
-            createMessage("1", "User");
+			createMessage(senderId, receiverId);
 			setMessage("");
 		}
 	};
 
 	const onSubmit = () => {
-        createMessage("1", "User");
+		createMessage(senderId, receiverId);
 		setMessage("");
 	};
 
