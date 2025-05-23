@@ -10,6 +10,7 @@ interface ISocketContext {
 	sendMessage: (message: string, senderId: string, receiverId: string) => void;
 	messages: Message[];
 	joinRooms: (userId: string, groupIds: string[]) => void;
+	leaveRooms: (userId: string, groupIds: string[]) => void;
 	isConnected: boolean;
 }
 
@@ -46,6 +47,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 		[socket]
 	);
 
+	const leaveRooms = useCallback(
+		(userId: string, groupIds: string[]) => {
+			if (socket) {
+				socket.emit("leave-rooms", { userId, groupIds });
+			}
+		},
+		[socket]
+	);
+
 	const onMessageRec = useCallback((payload: Message) => {
 		setMessages((prev) => [...prev, payload]);
 	}, []);
@@ -70,5 +80,5 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 		};
 	}, [onMessageRec, userId]);
 
-	return <SocketContext.Provider value={{ sendMessage, messages, joinRooms, isConnected }}>{children}</SocketContext.Provider>;
+	return <SocketContext.Provider value={{ sendMessage, messages, joinRooms, leaveRooms, isConnected }}>{children}</SocketContext.Provider>;
 };

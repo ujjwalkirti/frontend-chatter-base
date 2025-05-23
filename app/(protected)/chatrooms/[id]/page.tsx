@@ -7,13 +7,31 @@ import { useEffect } from "react";
 
 function Page() {
 	const { id } = useParams();
-	const { joinRooms, isConnected } = useSocket();
+	const { joinRooms, isConnected, leaveRooms } = useSocket();
 
 	useEffect(() => {
 		if (isConnected && id) {
 			const senderId = localStorage.getItem("senderId") as string;
 			joinRooms(senderId, [id as string]);
 		}
+
+		return function () {
+			if (isConnected && id) {
+				const senderId = localStorage.getItem("senderId") as string;
+				leaveRooms(senderId, [id as string]);
+			}
+		};
+	}, [id, isConnected]);
+
+	useEffect(() => {
+		const handleBeforeUnload = () => {
+			if (isConnected && id) {
+				const senderId = localStorage.getItem("senderId") as string;
+				leaveRooms(senderId, [id as string]);
+			}
+		};
+		window.addEventListener("beforeunload", handleBeforeUnload);
+		return () => window.removeEventListener("beforeunload", handleBeforeUnload);
 	}, [id, isConnected]);
 
 	return (

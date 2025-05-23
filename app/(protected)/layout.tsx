@@ -1,9 +1,6 @@
-'use client';
+"use client";
 import Navbar from "@/components/common/Navbar";
-import { authContext } from "@/contexts/AuthProvider";
 import { SocketProvider } from "@/contexts/SocketProvider";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
 
 export default function RootLayout({
 	children,
@@ -21,11 +18,9 @@ export default function RootLayout({
 	// }, [user]);
 
 	return (
-		<html lang="en">
-			<body className="">
-				<Navbar />
-				<SocketProvider>{children}</SocketProvider>
-			</body>
-		</html>
+		<section>
+			<Navbar />
+			<SocketProvider>{children}</SocketProvider>
+		</section>
 	);
 }
