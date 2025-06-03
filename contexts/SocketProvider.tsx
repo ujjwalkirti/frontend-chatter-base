@@ -47,11 +47,36 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 		[socket]
 	);
 
+	const onJoinRooms = useCallback(({ userId: joinedUserId }: { userId: string }) => {
+		setMessages((prev) => [
+			...prev,
+			{
+				senderId: joinedUserId,
+				message: `User ${joinedUserId} joined the chat.`,
+				type: "system",
+			},
+		]);
+	}, []);
+
 	const leaveRooms = useCallback(
 		(userId: string, groupIds: string[]) => {
 			if (socket) {
 				socket.emit("leave-rooms", { userId, groupIds });
 			}
+		},
+		[socket]
+	);
+
+	const onLeaveRooms = useCallback(
+		({ userId: joinedUserId }: { userId: string }) => {
+			setMessages((prev) => [
+				...prev,
+				{
+					senderId: joinedUserId,
+					message: `User ${joinedUserId} left the chat.`,
+					type: "system",
+				},
+			]);
 		},
 		[socket]
 	);
@@ -70,10 +95,16 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
 		_socket.on("message", onMessageRec);
 
+		_socket.on("join-rooms", onJoinRooms);
+
+		_socket.on("leave-rooms", onLeaveRooms)
+
 		setSocket(_socket);
 
 		return () => {
 			_socket.off("message", onMessageRec);
+			_socket.off("join-rooms", onJoinRooms);
+			_socket.off("leave-rooms", onLeaveRooms);
 			_socket.disconnect();
 			setSocket(undefined);
 			setIsConnected(false); // NEW

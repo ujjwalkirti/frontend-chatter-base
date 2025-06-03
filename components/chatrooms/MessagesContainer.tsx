@@ -25,6 +25,12 @@ function MessagesContainer() {
 	return (
 		<div id="message-container" className="flex flex-col p-2 gap-2 h-[calc(100vh-250px)] overflow-y-scroll">
 			{messages.map((message, index) => {
+				if (message.type === "system")
+					return (
+						<div className="mx-auto bg-gray-200 p-2 rounded text-sm my-2">
+							<p>{message.message}</p>
+						</div>
+					);
 				const isSenderCurrentUser = message.senderId === localStorage.getItem("senderId");
 				return <IndividualMessageBox isSenderCurrentUser={isSenderCurrentUser} message={message} key={message.senderId + index.toString()} />;
 			})}

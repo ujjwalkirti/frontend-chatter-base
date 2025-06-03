@@ -14,6 +14,7 @@ interface ChatRoom {
 interface Message {
     senderId: string;
     message: string;
+    type?: 'user' | 'system'
 }
 
 interface User {
